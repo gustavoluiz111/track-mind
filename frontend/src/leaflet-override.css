@@ -1,0 +1,23 @@
+/* Leaflet map Dark overrides for the custom styling */
+.custom-map-filter {
+    background: var(--bg-base) !important;
+}
+
+.leaflet-container {
+    font-family: 'DM Sans', sans-serif;
+}
+
+.leaflet-popup-content-wrapper {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+.leaflet-popup-tip-container {
+    display: none;
+    /* Hide default tip */
+}
+
+.leaflet-popup-content {
+    margin: 0 !important;
+}
