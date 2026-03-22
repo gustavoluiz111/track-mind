@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Navigation, Battery, Zap, AlertTriangle, Wifi } from 'lucide-react';
-import { ref, onValue } from 'firebase/database';
+import { Navigation, Battery, Zap, AlertTriangle, Wifi, Search, PlusCircle } from 'lucide-react';
+import { ref, onValue, set } from 'firebase/database';
 import { db } from '../config/firebase';
 
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
@@ -45,6 +45,46 @@ export default function Rastreamento() {
     const [equipamentos, setEquipamentos] = useState([]);
     const [selected, setSelected] = useState(null);
     const [wsStatus, setWsStatus] = useState('Desconectado');
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const gerarExemplos = async () => {
+        const exemplos = {
+            'DEMO-001': {
+                device_id: 'DEMO-001',
+                item_nome: 'Gerador Alpha',
+                lat: -8.0522 + (Math.random() - 0.5) * 0.05,
+                lng: -34.9286 + (Math.random() - 0.5) * 0.05,
+                battery: 89,
+                speed: 45,
+                timestamp: new Date().toISOString()
+            },
+            'DEMO-002': {
+                device_id: 'DEMO-002',
+                item_nome: 'Torre de Iluminação',
+                lat: -8.0522 + (Math.random() - 0.5) * 0.05,
+                lng: -34.9286 + (Math.random() - 0.5) * 0.05,
+                battery: 12,
+                speed: 0,
+                timestamp: new Date().toISOString()
+            },
+            'DEMO-003': {
+                device_id: 'DEMO-003',
+                item_nome: 'Retroescavadeira',
+                lat: -8.0522 + (Math.random() - 0.5) * 0.05,
+                lng: -34.9286 + (Math.random() - 0.5) * 0.05,
+                battery: 99,
+                speed: 12,
+                timestamp: new Date().toISOString()
+            }
+        };
+        try {
+            for (const [key, val] of Object.entries(exemplos)) {
+                await set(ref(db, `rastreamento/${key}`), val);
+            }
+        } catch(err) {
+            console.error(err);
+        }
+    };
 
     useEffect(() => {
         setWsStatus('Conectado');
@@ -79,6 +119,11 @@ export default function Rastreamento() {
         return () => unsubscribe();
     }, []);
 
+    const filteredEquipments = equipamentos.filter(eq => 
+        eq.token.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        eq.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="flex flex-col h-[calc(100vh-140px)] gap-6 animate-fade-in relative z-0">
             <div className="flex justify-between items-center sm:flex-row flex-col gap-4">
@@ -88,6 +133,9 @@ export default function Rastreamento() {
                 </div>
 
                 <div className="flex items-center gap-4">
+                    <button onClick={gerarExemplos} className="btn-premium flex items-center gap-2 text-xs py-1.5 px-3">
+                        <PlusCircle size={14} /> Gerar Exemplos
+                    </button>
                     <div className="flex items-center gap-2 bg-surface border border-border px-3 py-1.5 rounded-full text-xs font-mono">
                         <span className={`w-2 h-2 rounded-full ${wsStatus === 'Conectado' ? 'bg-success animate-pulse' : 'bg-danger'}`}></span>
                         <span className="text-muted">WebSocket:</span>
@@ -98,48 +146,61 @@ export default function Rastreamento() {
 
             <div className="flex-1 bg-surface border border-border rounded-xl shadow-glow overflow-hidden relative z-0 flex">
                 {/* LEAFLET CONTAINER */}
-                <div className="flex-1 h-full z-0">
-                    <MapContainer center={[-8.0522, -34.9286]} zoom={12} className="h-full w-full custom-map-filter">
+                <div style={{ flex: 1, height: '100%', minHeight: 0, position: 'relative' }}>
+                    <MapContainer
+                        center={[-8.0522, -34.9286]}
+                        zoom={12}
+                        style={{ height: '100%', width: '100%' }}
+                    >
                         <TileLayer
                             attribution='&copy; <a href="https://carto.com/">CARTO</a>'
                             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                         />
-                        {equipamentos.map(eq => (
+                        {filteredEquipments.map(eq => (
                             <Marker
                                 key={eq.id}
                                 position={[eq.lat, eq.lng]}
                                 icon={createCustomIcon(eq.status)}
                                 eventHandlers={{ click: () => setSelected(eq) }}
                             >
-                                <Popup className="custom-popup border-none bg-transparent">
-                                    <div className="bg-surface border border-border p-4 rounded-lg shadow-2xl min-w-[200px]">
-                                        <h3 className="font-mono font-bold text-accent text-lg">{eq.token}</h3>
-                                        <p className="text-muted text-xs mb-3">{eq.nome}</p>
-
-                                        <div className="grid grid-cols-2 gap-2 text-sm text-primary">
-                                            <div className="flex items-center gap-2"><Battery size={14} className="text-success" /> {eq.bateria}%</div>
-                                            <div className="flex items-center gap-2"><Navigation size={14} className="text-accent" /> {eq.velocidade} km/h</div>
-                                            <div className="flex items-center gap-2 col-span-2 text-xs text-muted mt-2 border-t border-border pt-2">
-                                                <Zap size={12} /> {eq.ultimaAtt}
-                                            </div>
+                                <Popup>
+                                    <div style={{ background: '#0D1526', border: '1px solid #1E2D4A', borderRadius: 10, padding: '12px 16px', minWidth: 180, boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+                                        <p style={{ fontFamily: 'monospace', fontWeight: 700, color: '#6366F1', fontSize: 15, margin: '0 0 4px' }}>{eq.token}</p>
+                                        <p style={{ color: '#64748B', fontSize: 11, margin: '0 0 10px' }}>{eq.nome}</p>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, fontSize: 12, color: '#F0F4FF' }}>
+                                            <span>🔋 {eq.bateria}%</span>
+                                            <span>🚀 {eq.velocidade} km/h</span>
+                                            <span style={{ gridColumn: '1/-1', color: '#64748B', fontSize: 10, borderTop: '1px solid #1E2D4A', paddingTop: 6 }}>⚡ {eq.ultimaAtt}</span>
                                         </div>
                                     </div>
                                 </Popup>
                             </Marker>
                         ))}
-                        {equipamentos.length > 0 && <FitBounds markers={equipamentos} />}
+                        {filteredEquipments.length > 0 && <FitBounds markers={filteredEquipments} />}
                     </MapContainer>
                 </div>
 
                 {/* FLOATING LIST / OVERLAY LIST (optional side panel inside) */}
                 <div className="w-[320px] bg-bg-base/90 backdrop-blur border-l border-border hidden lg:flex flex-col z-[400] h-full absolute right-0 top-0">
-                    <div className="p-4 border-b border-border flex justify-between items-center bg-surface/50">
-                        <h3 className="font-mono text-sm tracking-widest text-muted">LISTA DE FROTA</h3>
-                        <span className="text-xs font-bold bg-elevated px-2 py-1 rounded text-primary">{equipamentos.length} UNI</span>
+                    <div className="p-4 border-b border-border bg-surface/50">
+                        <div className="flex justify-between items-center mb-3">
+                            <h3 className="font-mono text-sm tracking-widest text-muted">LISTA DE FROTA</h3>
+                            <span className="text-xs font-bold bg-elevated px-2 py-1 rounded text-primary">{filteredEquipments.length} UNI</span>
+                        </div>
+                        <div className="relative">
+                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                            <input
+                                type="text"
+                                placeholder="Buscar equipamento..."
+                                value={searchTerm}
+                                onChange={e => setSearchTerm(e.target.value)}
+                                className="input-base pl-9 text-xs h-9 w-full rounded-lg"
+                            />
+                        </div>
                     </div>
 
                     <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
-                        {equipamentos.map(eq => (
+                        {filteredEquipments.map(eq => (
                             <div
                                 key={eq.id}
                                 onClick={() => setSelected(eq)}

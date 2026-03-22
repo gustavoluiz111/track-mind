@@ -1,19 +1,39 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ref, set } from 'firebase/database';
+import { ref, set, get, child } from 'firebase/database';
 import { db } from '../config/firebase';
 
 export default function SimuladorGPS() {
     const [urlWebhook, setUrlWebhook] = useState('http://localhost:3000/api/v1/rastreamento/webhook');
     const [dispositivos, setDispositivos] = useState([]);
+    
+    // Lista de itens do Firebase para seleção
+    const [itensDb, setItensDb] = useState([]);
 
     // Form add new
-    const [newToken, setNewToken] = useState('');
+    const [selectedItemToken, setSelectedItemToken] = useState('');
     const [newLat, setNewLat] = useState(-8.0522);
     const [newLng, setNewLng] = useState(-34.9286);
     const [intervaloS, setIntervaloS] = useState(10);
 
     const [logs, setLogs] = useState([]);
     const timers = useRef({});
+
+    useEffect(() => {
+        const fetchItens = async () => {
+            try {
+                const snapshot = await get(child(ref(db), 'itens'));
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    setItensDb(list);
+                    if (list.length > 0) setSelectedItemToken(list[0].token);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar itens para simulador:", error);
+            }
+        };
+        fetchItens();
+    }, []);
 
     const addLog = (tipo, msg, details) => {
         setLogs(prev => [{ id: Date.now(), time: new Date().toLocaleTimeString(), tipo, msg, details }, ...prev].slice(0, 100));
@@ -28,7 +48,7 @@ export default function SimuladorGPS() {
             speed: dev.velocidade,
             signal: '4G',
             timestamp: new Date().toISOString(),
-            item_nome: `Dispositivo ${dev.token}`
+            item_nome: dev.nome || `Dispositivo ${dev.token}`
         };
 
         try {
@@ -129,10 +149,19 @@ export default function SimuladorGPS() {
     };
 
     const addDevice = () => {
-        if (!newToken) return alert('Informe o token do dispositivo');
+        if (!selectedItemToken) return alert('Selecione ou informe o token do dispositivo');
+        
+        // Verifica se já existe na lista
+        if (dispositivos.find(d => d.token === selectedItemToken)) {
+            return alert('Este dispositivo já está na fila de simulação.');
+        }
+
+        const itemDb = itensDb.find(i => i.token === selectedItemToken);
+        
         const newDev = {
             id: Date.now().toString(),
-            token: newToken,
+            token: selectedItemToken,
+            nome: itemDb ? itemDb.nome : `Dispositivo ${selectedItemToken}`,
             lat: newLat,
             lng: newLng,
             bateria: 100,
@@ -141,7 +170,6 @@ export default function SimuladorGPS() {
             ativo: false
         };
         setDispositivos(prev => [...prev, newDev]);
-        setNewToken('');
     };
 
     const removeDevice = (id) => {
@@ -225,9 +253,17 @@ console.log('Simulador Multi-Dispositivos iniciado (' + devices.length + ' inst�
                             </div>
 
                             <div>
-                                <label className="block text-sm text-muted mb-1">Novo Token</label>
-                                <input type="text" value={newToken} onChange={e => setNewToken(e.target.value)} placeholder="EQP-2026-XXXX"
-                                    className="w-full bg-elevated border border-border p-2 rounded focus:border-accent font-mono text-sm uppercase text-primary" />
+                                <label className="block text-sm text-muted mb-1">Equipamento a Simular</label>
+                                <select 
+                                    value={selectedItemToken} 
+                                    onChange={e => setSelectedItemToken(e.target.value)}
+                                    className="w-full bg-elevated border border-border p-2 rounded focus:border-accent font-mono text-sm uppercase text-primary"
+                                >
+                                    {itensDb.map(i => (
+                                        <option key={i.id} value={i.token}>{i.token} - {i.nome}</option>
+                                    ))}
+                                    {itensDb.length === 0 && <option value="">Nenhum equipamento cadastrado</option>}
+                                </select>
                             </div>
                         </div>
 

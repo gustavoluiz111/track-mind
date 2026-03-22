@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -5,13 +6,17 @@ import SimuladorGPS from './pages/SimuladorGPS';
 import Dashboard from './pages/Dashboard';
 import Rastreamento from './pages/Rastreamento';
 import Itens from './pages/Itens';
+import Clientes from './pages/Clientes';
+import Checklists from './pages/Checklists';
+import Contratos from './pages/Contratos';
+import Login from './pages/Login';
 import './App.css';
 
-const Layout = () => (
+const Layout = ({ onLogout }) => (
   <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg-base)' }}>
-    <Sidebar />
+    <Sidebar onLogout={onLogout} />
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
-      <Header />
+      <Header onLogout={onLogout} />
       <main style={{ flex: 1, overflowY: 'auto', padding: '24px 28px' }}>
         <Outlet />
       </main>
@@ -20,32 +25,35 @@ const Layout = () => (
 );
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => sessionStorage.getItem('upe_auth') === '1'
+  );
+
+  const handleLogin = () => setIsAuthenticated(true);
+  const handleLogout = () => {
+    sessionStorage.removeItem('upe_auth');
+    setIsAuthenticated(false);
+  };
+
+  if (!isAuthenticated) {
+    return <Login onLogin={handleLogin} />;
+  }
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route element={<Layout />}>
-          <Route path="/dashboard"    element={<Dashboard />} />
-          <Route path="/rastreamento" element={<Rastreamento />} />
-          <Route path="/simulador-gps"element={<SimuladorGPS />} />
-          <Route path="/itens"        element={<Itens />} />
-          <Route path="/checklists"   element={<PlaceholderPage title="Checklists" sub="Inspeções e laudos" />} />
-          <Route path="/contratos"    element={<PlaceholderPage title="Contratos"  sub="Gestão de contratos" />} />
-          <Route path="/clientes"     element={<PlaceholderPage title="Clientes"   sub="Cadastro de clientes" />} />
+        <Route element={<Layout onLogout={handleLogout} />}>
+          <Route path="/dashboard"     element={<Dashboard />} />
+          <Route path="/rastreamento"  element={<Rastreamento />} />
+          <Route path="/simulador-gps" element={<SimuladorGPS />} />
+          <Route path="/itens"         element={<Itens />} />
+          <Route path="/checklists"    element={<Checklists />} />
+          <Route path="/contratos"     element={<Contratos />} />
+          <Route path="/clientes"      element={<Clientes />} />
         </Route>
       </Routes>
     </BrowserRouter>
-  );
-}
-
-function PlaceholderPage({ title, sub }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: 12 }}>
-      <p style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono, monospace)', fontSize: 13 }}>
-        🚧 {title} — Em construção
-      </p>
-      <p style={{ color: 'var(--text-subtle)', fontSize: 11 }}>{sub}</p>
-    </div>
   );
 }
 

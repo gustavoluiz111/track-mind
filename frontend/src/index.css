@@ -306,10 +306,18 @@
 .leaflet-container {
   background: var(--bg-base) !important;
   font-family: 'Inter', sans-serif !important;
+  height: 100%;
+  width: 100%;
 }
-.leaflet-pane,
-.leaflet-map-pane { z-index: 0 !important; }
-.leaflet-control  { z-index: 10 !important; }
+/* Prevent leaflet panes from fighting with portal modals */
+.leaflet-pane { z-index: auto; }
+.leaflet-tile-pane { z-index: 2; }
+.leaflet-shadow-pane { z-index: 5; }
+.leaflet-overlay-pane { z-index: 4; }
+.leaflet-marker-pane { z-index: 6; }
+.leaflet-tooltip-pane { z-index: 7; }
+.leaflet-popup-pane { z-index: 8; }
+.leaflet-control { z-index: 10 !important; }
 .custom-popup .leaflet-popup-content-wrapper,
 .custom-popup .leaflet-popup-tip {
   background: transparent !important;

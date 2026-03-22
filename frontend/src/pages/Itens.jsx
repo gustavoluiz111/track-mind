@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Plus, Search, Filter, MoreVertical, Edit2,
+    Plus, Search, Filter, MoreVertical, Edit2, Trash2,
     QrCode, Box, Wifi, WifiOff, X, Cpu, Clock, MapPin, Hash, ShieldCheck
 } from 'lucide-react';
-import { ref, get, child, push, set } from 'firebase/database';
+import { ref, get, child, push, set, remove } from 'firebase/database';
 import { db } from '../config/firebase';
 
 const STATUS_FILTERS = [
@@ -73,6 +73,17 @@ export default function Itens() {
         } catch (error) {
             console.error("Erro ao salvar:", error);
             setModalError(error.message || "Erro ao salvar equipamento.");
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (!window.confirm("Deseja realmente excluir este equipamento?")) return;
+        try {
+            await remove(ref(db, `itens/${id}`));
+            fetchItens();
+        } catch (error) {
+            console.error("Erro ao excluir equipamento:", error);
+            alert("Erro ao excluir: " + error.message);
         }
     };
 
@@ -434,6 +445,9 @@ export default function Itens() {
                                                                     </button>
                                                                     <button className="p-2 rounded-lg transition-colors text-gray-400 hover:bg-[#1E2D4A] hover:text-white border border-transparent hover:border-[#2A3F60]" title="Editar Equipamento" onClick={() => openEditModal(item)}>
                                                                         <Edit2 size={16} />
+                                                                    </button>
+                                                                    <button className="p-2 rounded-lg transition-colors text-gray-400 hover:bg-red-500/10 hover:text-red-400 border border-transparent hover:border-red-500/20" title="Excluir Equipamento" onClick={() => handleDelete(item.id)}>
+                                                                        <Trash2 size={16} />
                                                                     </button>
                                                                     <button className="p-2 rounded-lg transition-colors text-gray-400 hover:bg-[#1E2D4A] hover:text-white border border-transparent hover:border-[#2A3F60]" title="Mais opções">
                                                                         <MoreVertical size={16} />
