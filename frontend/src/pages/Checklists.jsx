@@ -345,12 +345,12 @@ export default function Checklists() {
                 {/* Table card */}
                 <div className="card flex flex-col overflow-hidden" style={{ minHeight: 300 }}>
                     {/* Toolbar */}
-                    <div className="px-4 py-3 flex items-center justify-between gap-3 bg-[#0D1526] border-b border-[#1E2D4A]">
-                        <div className="relative flex-1 max-w-xs">
+                    <div className="px-4 py-3 flex items-center justify-between gap-3 bg-[#0D1526] border-b border-[#1E2D4A] flex-wrap">
+                        <div className="relative flex-1 min-w-[200px] sm:max-w-xs">
                             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
                             <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-                                placeholder="Buscar equipamento ou cliente..."
-                                className="input-base pl-9 h-9 text-xs" />
+                                placeholder="Buscar..."
+                                className="input-base pl-9 h-9 text-xs w-full" />
                             {search && (
                                 <button className="absolute right-3 top-1/2 -translate-y-1/2" onClick={() => setSearch('')}>
                                     <X size={12} className="text-[#64748B]" />
@@ -363,7 +363,7 @@ export default function Checklists() {
                     </div>
 
                     {/* Content */}
-                    <div className="overflow-auto flex-1">
+                    <div className="overflow-x-auto overflow-y-auto flex-1">
                         {loading ? (
                             <div className="flex flex-col items-center justify-center py-20 gap-3">
                                 <div className="w-8 h-8 rounded-full border-2 animate-spin"
@@ -388,15 +388,15 @@ export default function Checklists() {
                                 )}
                             </div>
                         ) : (
-                            <table className="w-full text-left border-collapse text-sm">
+                            <table className="w-full text-left border-collapse text-sm min-w-[800px]">
                                 <thead className="sticky top-0 z-10 text-[11px] font-mono uppercase tracking-wider text-[#64748B]"
                                     style={{ background: '#070B14', borderBottom: '1px solid #1E2D4A' }}>
                                     <tr>
-                                        <th className="px-6 py-3 font-normal">Data</th>
+                                        <th className="px-6 py-3 font-normal w-[120px]">Data</th>
                                         <th className="px-6 py-3 font-normal">Equip. / Cliente</th>
-                                        <th className="px-6 py-3 font-normal">Checklist</th>
-                                        <th className="px-6 py-3 font-normal">Condição</th>
-                                        <th className="px-6 py-3 font-normal text-right">Ações</th>
+                                        <th className="px-6 py-3 font-normal w-[180px]">Checklist</th>
+                                        <th className="px-6 py-3 font-normal w-[200px]">Condição</th>
+                                        <th className="px-6 py-3 font-normal text-right w-[160px]">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>

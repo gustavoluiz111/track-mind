@@ -12,12 +12,26 @@ import Contratos from './pages/Contratos';
 import Login from './pages/Login';
 import './App.css';
 
-const Layout = ({ onLogout }) => (
-  <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg-base)' }}>
-    <Sidebar onLogout={onLogout} />
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
-      <Header onLogout={onLogout} />
-      <main style={{ flex: 1, overflowY: 'auto', padding: '24px 28px' }}>
+const Layout = ({ onLogout, isSidebarOpen, setSidebarOpen }) => (
+  <div className="app-layout">
+    {/* Overlay for mobile */}
+    <div 
+      className={`sidebar-overlay ${isSidebarOpen ? 'is-visible' : ''}`} 
+      onClick={() => setSidebarOpen(false)} 
+    />
+    
+    <Sidebar 
+      onLogout={onLogout} 
+      isOpen={isSidebarOpen} 
+      onClose={() => setSidebarOpen(false)} 
+    />
+    
+    <div className="main-container">
+      <Header 
+        onLogout={onLogout} 
+        onMenuClick={() => setSidebarOpen(true)} 
+      />
+      <main className="main-content">
         <Outlet />
       </main>
     </div>
@@ -25,6 +39,7 @@ const Layout = ({ onLogout }) => (
 );
 
 function App() {
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(
     () => sessionStorage.getItem('upe_auth') === '1'
   );
@@ -43,7 +58,7 @@ function App() {
     <HashRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route element={<Layout onLogout={handleLogout} />}>
+        <Route element={<Layout onLogout={handleLogout} isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />}>
           <Route path="/dashboard"     element={<Dashboard />} />
           <Route path="/rastreamento"  element={<Rastreamento />} />
           <Route path="/simulador-gps" element={<SimuladorGPS />} />

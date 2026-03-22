@@ -223,20 +223,20 @@ console.log('Simulador Multi-Dispositivos iniciado (' + devices.length + ' inst�
     }, []);
 
     return (
-        <div className="flex flex-col h-full gap-6">
-            <div className="flex items-center gap-4">
-                <h2 className="text-2xl font-bold font-mono text-accent text-shadow-glow">🛰 Simulador GPS Avançado</h2>
-                <span className="px-3 py-1 bg-warning/20 text-warning text-xs font-bold rounded-full animate-pulse uppercase tracking-wider">
-                    Modo Teste Multi-Dispositivo
+        <div className="flex flex-col h-full gap-4 md:gap-6 animate-fade-in relative z-0">
+            <div className="flex items-center gap-2 md:gap-4 flex-wrap">
+                <h2 className="text-xl md:text-2xl font-bold font-mono text-accent text-shadow-glow">🛰 Simulador GPS</h2>
+                <span className="px-3 py-1 bg-warning/20 text-warning text-[10px] font-bold rounded-full animate-pulse uppercase tracking-wider">
+                    Modo Teste
                 </span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
                 {/* PAINEL ESQUERDO */}
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-4 md:gap-6">
                     {/* Add Device */}
-                    <div className="bg-surface border border-border rounded-xl p-6 flex flex-col gap-4 box-shadow-glow">
-                        <h3 className="font-mono text-accent">Configuração Global & Adição</h3>
+                    <div className="bg-surface border border-border rounded-xl p-4 md:p-6 flex flex-col gap-4 box-shadow-glow">
+                        <h3 className="font-mono text-accent text-sm">Configuração Global</h3>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="col-span-2">

@@ -231,15 +231,15 @@ export default function Clientes() {
                 {/* ── Table card ── */}
                 <div className="card flex flex-col overflow-hidden" style={{ minHeight: 300 }}>
                     {/* Table Toolbar */}
-                    <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ borderBottom: '1px solid var(--border)', background: 'var(--bg-elevated)' }}>
-                        <div className="relative flex items-center w-64">
+                    <div className="px-4 py-3 flex items-center justify-between gap-3 flex-wrap" style={{ borderBottom: '1px solid var(--border)', background: 'var(--bg-elevated)' }}>
+                        <div className="relative flex items-center w-full sm:w-64">
                             <Search size={14} className="absolute left-3 pointer-events-none" style={{ color: 'var(--text-muted)' }} />
                             <input
                                 type="text"
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
-                                placeholder="Nome, email, documento..."
-                                className="input-base pl-9 pr-8 text-xs h-8 rounded-lg"
+                                placeholder="Buscar..."
+                                className="input-base pl-9 pr-8 text-xs h-8 rounded-lg w-full"
                             />
                             {search && (
                                 <button className="absolute right-2.5" onClick={() => setSearch('')}>
@@ -253,7 +253,7 @@ export default function Clientes() {
                     </div>
 
                     {/* Table List */}
-                    <div className="overflow-auto flex-1">
+                    <div className="overflow-x-auto overflow-y-auto flex-1">
                         {loading ? (
                             <div className="flex flex-col items-center justify-center py-20 gap-3">
                                 <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
@@ -276,7 +276,7 @@ export default function Clientes() {
                                 )}
                             </div>
                         ) : (
-                            <table className="w-full text-left border-collapse text-sm">
+                            <table className="w-full text-left border-collapse text-sm min-w-[700px]">
                                 <thead className="bg-[#0b0f19] border-y border-[#1E2D4A] text-xs font-mono text-gray-500 uppercase tracking-wider sticky top-0 z-10 shadow-sm">
                                     <tr>
                                         <th className="px-6 py-3 font-normal">Identificação</th>

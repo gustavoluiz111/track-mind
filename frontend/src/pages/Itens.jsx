@@ -343,15 +343,15 @@ export default function Itens() {
                 {/* ── Table card ── */}
                 <div className="card flex flex-col overflow-hidden" style={{ minHeight: 300 }}>
                     {/* Table Toolbar */}
-                    <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ borderBottom: '1px solid var(--border)', background: 'var(--bg-elevated)' }}>
-                        <div className="relative flex items-center w-64">
+                    <div className="px-4 py-3 flex items-center justify-between gap-3 flex-wrap" style={{ borderBottom: '1px solid var(--border)', background: 'var(--bg-elevated)' }}>
+                        <div className="relative flex items-center w-full sm:w-64">
                             <Search size={14} className="absolute left-3 pointer-events-none" style={{ color: 'var(--text-muted)' }} />
                             <input
                                 type="text"
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
-                                placeholder="Token, nome, categoria..."
-                                className="input-base pl-9 pr-8 text-xs h-8 rounded-lg"
+                                placeholder="Buscar..."
+                                className="input-base pl-9 pr-8 text-xs h-8 rounded-lg w-full"
                             />
                             {search && (
                                 <button className="absolute right-2.5" onClick={() => setSearch('')}>
@@ -365,7 +365,7 @@ export default function Itens() {
                     </div>
 
                     {/* Table Grouped List */}
-                    <div className="overflow-auto flex-1">
+                    <div className="overflow-x-auto overflow-y-auto flex-1">
                         {loading ? (
                             <div className="flex flex-col items-center justify-center py-20 gap-3">
                                 <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
@@ -397,7 +397,7 @@ export default function Itens() {
                                             <div className="text-[10px] text-gray-500 font-mono bg-[#1c1f2e] px-2 py-0.5 rounded-md border border-[#2a2d3d]">{groupedItens[categoria].length} itens</div>
                                         </div>
 
-                                        <table className="w-full text-left border-collapse text-sm">
+                                        <table className="w-full text-left border-collapse text-sm min-w-[700px]">
                                             <thead className="sr-only">
                                                 <tr>
                                                     <th>Token</th><th>Equipamento</th><th>Status</th><th>Rastreador</th><th>Ações</th>
@@ -411,21 +411,21 @@ export default function Itens() {
                                                             key={item.id}
                                                             className="transition-colors border-b border-[#1E2D4A]/50 last:border-b-0 hover:bg-[#131D35]"
                                                         >
-                                                            <td className="px-6 py-4 w-[15%]">
+                                                            <td className="px-6 py-4 w-[120px]">
                                                                 <span className="font-mono text-xs font-bold px-2.5 py-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
                                                                     {item.token}
                                                                 </span>
                                                             </td>
-                                                            <td className="px-6 py-4 w-[35%]">
+                                                            <td className="px-6 py-4">
                                                                 <p className="font-medium text-white text-sm leading-tight">{item.nome}</p>
                                                             </td>
-                                                            <td className="px-6 py-4 w-[20%]">
+                                                            <td className="px-6 py-4 w-[160px]">
                                                                 <span className="flex items-center gap-1.5 w-fit px-3 py-1.5 rounded-full text-[11px] font-bold" style={{ background: s.bg, color: s.color }}>
                                                                     <span className="w-1.5 h-1.5 rounded-full" style={{ background: s.dot }} />
                                                                     {s.label || item.status}
                                                                 </span>
                                                             </td>
-                                                            <td className="px-6 py-4 w-[15%]">
+                                                            <td className="px-6 py-4 w-[140px]">
                                                                 {item.rastreador_id ? (
                                                                     <span className="flex items-center gap-1.5 text-xs font-mono text-emerald-400">
                                                                         <Wifi size={13} className="opacity-80" />
@@ -438,7 +438,7 @@ export default function Itens() {
                                                                     </span>
                                                                 )}
                                                             </td>
-                                                            <td className="px-6 py-4 w-[15%] text-right">
+                                                            <td className="px-6 py-4 w-[160px] text-right">
                                                                 <div className="flex justify-end gap-1.5">
                                                                     <button className="p-2 rounded-lg transition-colors text-gray-400 hover:bg-indigo-500/10 hover:text-indigo-400" title="Registro Oficial QR Code" onClick={() => setQrModalItem(item)}>
                                                                         <QrCode size={16} />

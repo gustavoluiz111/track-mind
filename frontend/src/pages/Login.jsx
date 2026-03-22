@@ -93,93 +93,48 @@ export default function Login({ onLogin }) {
                 }} />
             </div>
 
-            {/* Main content: full-screen split */}
-            <div style={{
-                display: 'flex',
-                width: '100%',
-                maxWidth: 960,
-                minHeight: 480,
-                margin: '0 24px',
-                borderRadius: 24,
-                overflow: 'hidden',
-                boxShadow: '0 40px 80px rgba(0,0,0,0.5)',
-                position: 'relative',
-                zIndex: 1
-            }}>
+            {/* Main content: responsive container */}
+            <div className="flex flex-col md:flex-row w-full max-w-[960px] min-h-[480px] m-6 rounded-[24px] overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.5)] relative z-[1] border border-white/5">
 
                 {/* ── LEFT PANEL ── */}
-                <div style={{
-                    flex: 1,
-                    padding: '44px 48px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    background: 'rgba(80,20,160,0.15)',
-                    backdropFilter: 'blur(4px)'
-                }}>
+                <div className="flex-1 p-8 md:p-12 flex flex-col justify-between bg-white/[0.03] backdrop-blur-[4px]">
                     {/* Logo mark */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <div style={{
-                            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, width: 28, height: 28
-                        }}>
+                    <div className="flex items-center gap-2">
+                        <div className="grid grid-cols-2 gap-[3px] w-7 h-7">
                             {[0,1,2,3].map(i => (
-                                <div key={i} style={{
-                                    background: i === 0 || i === 3 ? 'white' : 'rgba(255,255,255,0.5)',
-                                    borderRadius: 2
-                                }} />
+                                <div key={i} className={`rounded-[2px] ${i === 0 || i === 3 ? 'bg-white' : 'bg-white/50'}`} />
                             ))}
                         </div>
                     </div>
 
                     {/* Welcome text */}
-                    <div>
-                        <h1 style={{
-                            fontSize: 52, fontWeight: 800, color: 'white', margin: '0 0 16px',
-                            lineHeight: 1.1, letterSpacing: '-1px'
-                        }}>
+                    <div className="py-8 md:py-0">
+                        <h1 className="text-4xl md:text-[52px] font-[800] text-white m-0 mb-4 leading-[1.1] tracking-[-1px]">
                             Bem-vindo!
                         </h1>
-                        <div style={{ width: 36, height: 3, background: 'rgba(255,255,255,0.5)', marginBottom: 20, borderRadius: 2 }} />
-                        <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 13.5, lineHeight: 1.7, maxWidth: 260, margin: '0 0 28px' }}>
+                        <div className="w-9 h-[3px] bg-white/50 mb-5 rounded-[2px]" />
+                        <p className="text-white/55 text-[13.5px] leading-[1.7] max-w-[260px] m-0 mb-7">
                             Sistema integrado de gestão e rastreamento de equipamentos industriais.
                             Faça login para continuar.
                         </p>
-                        <button style={{
-                            display: 'inline-flex', alignItems: 'center', gap: 6,
-                            background: 'linear-gradient(135deg, #FF5F6D 0%, #FFC371 100%)',
-                            border: 'none', borderRadius: 24, padding: '10px 22px',
-                            color: 'white', fontWeight: 700, fontSize: 13,
-                            cursor: 'pointer', boxShadow: '0 6px 20px rgba(255,100,80,0.4)'
-                        }}>
+                        <button className="inline-flex items-center gap-1.5 bg-gradient-to-br from-[#FF5F6D] to-[#FFC371] border-none rounded-[24px] px-6 py-2.5 text-white font-[700] text-[13px] cursor-pointer shadow-[0_6px_20px_rgba(255,100,80,0.4)] hover:scale-105 transition-transform">
                             Saiba mais
                         </button>
                     </div>
 
-                    <div /> {/* spacer */}
+                    <div className="hidden md:block" /> {/* spacer */}
                 </div>
 
                 {/* ── RIGHT PANEL — Sign In card ── */}
-                <div style={{
-                    width: 340,
-                    padding: '44px 36px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    background: 'rgba(255,255,255,0.08)',
-                    backdropFilter: 'blur(20px)',
-                    borderLeft: '1px solid rgba(255,255,255,0.1)'
-                }}>
-                    <h2 style={{
-                        color: 'white', fontSize: 28, fontWeight: 800,
-                        margin: '0 0 32px', textAlign: 'center', letterSpacing: '-0.5px'
-                    }}>
+                <div className="w-full md:w-[360px] p-8 md:p-11 flex flex-col justify-center bg-white/[0.08] backdrop-blur-[20px] border-t md:border-t-0 md:border-l border-white/10">
+                    <h2 className="text-white text-[28px] font-[800] m-0 mb-8 text-center tracking-[-0.5px]">
                         Sign in
                     </h2>
 
-                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                         {/* Username */}
                         <div>
-                            <label style={{ color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 600, display: 'block', marginBottom: 8 }}>
+                            <label className="text-white/85 text-[13px] font-[600] block mb-2">
                                 User Name
                             </label>
                             <input
@@ -188,53 +143,29 @@ export default function Login({ onLogin }) {
                                 value={username}
                                 onChange={e => setUsername(e.target.value)}
                                 required
-                                style={{
-                                    width: '100%', boxSizing: 'border-box',
-                                    background: 'rgba(255,255,255,0.12)',
-                                    border: '1px solid rgba(255,255,255,0.15)',
-                                    borderRadius: 24, padding: '11px 18px',
-                                    color: 'white', fontSize: 14, outline: 'none',
-                                    transition: 'border-color 0.2s',
-                                    backdropFilter: 'blur(8px)'
-                                }}
-                                onFocus={e => e.target.style.borderColor = 'rgba(255,255,255,0.5)'}
-                                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
+                                className="w-full bg-white/[0.12] border border-white/15 rounded-[24px] px-[18px] py-[11px] text-white text-sm outline-none focus:border-white/50 backdrop-blur-[8px] transition-all"
                             />
                         </div>
 
                         {/* Password */}
                         <div>
-                            <label style={{ color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 600, display: 'block', marginBottom: 8 }}>
+                            <label className="text-white/85 text-[13px] font-[600] block mb-2">
                                 Password
                             </label>
-                            <div style={{ position: 'relative' }}>
+                            <div className="relative">
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     placeholder="••••••••••"
                                     value={password}
                                     onChange={e => setPassword(e.target.value)}
                                     required
-                                    style={{
-                                        width: '100%', boxSizing: 'border-box',
-                                        background: 'rgba(255,255,255,0.12)',
-                                        border: '1px solid rgba(255,255,255,0.15)',
-                                        borderRadius: 24, padding: '11px 44px 11px 18px',
-                                        color: 'white', fontSize: 14, outline: 'none',
-                                        transition: 'border-color 0.2s',
-                                        backdropFilter: 'blur(8px)'
-                                    }}
-                                    onFocus={e => e.target.style.borderColor = 'rgba(255,255,255,0.5)'}
-                                    onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
+                                    className="w-full bg-white/[0.12] border border-white/15 rounded-[24px] pl-[18px] pr-[44px] py-[11px] text-white text-sm outline-none focus:border-white/50 backdrop-blur-[8px] transition-all"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    style={{
-                                        position: 'absolute', right: 14, top: '50%',
-                                        transform: 'translateY(-50%)', background: 'none',
-                                        border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.5)',
-                                        display: 'flex', padding: 0
-                                    }}>
+                                    className="absolute right-[14px] top-1/2 -translate-y-1/2 bg-none border-none cursor-pointer text-white/50 flex p-0"
+                                >
                                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                 </button>
                             </div>
@@ -242,12 +173,7 @@ export default function Login({ onLogin }) {
 
                         {/* Error */}
                         {error && (
-                            <div style={{
-                                display: 'flex', alignItems: 'center', gap: 8,
-                                background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)',
-                                borderRadius: 12, padding: '10px 14px', color: '#FCA5A5', fontSize: 13,
-                                animation: shake ? 'shake 0.5s ease' : undefined
-                            }}>
+                            <div className={`flex items-center gap-2 bg-red-500/15 border border-red-500/30 rounded-xl px-3.5 py-2.5 text-[#FCA5A5] text-[13px] ${shake ? 'animate-shake' : ''}`}>
                                 <AlertCircle size={14} /> {error}
                             </div>
                         )}
@@ -256,27 +182,11 @@ export default function Login({ onLogin }) {
                         <button
                             type="submit"
                             disabled={loading}
-                            style={{
-                                width: '100%',
-                                background: loading
-                                    ? 'rgba(255,100,80,0.4)'
-                                    : 'linear-gradient(135deg, #FF5F6D 0%, #FFC371 100%)',
-                                border: 'none', borderRadius: 24, padding: '13px',
-                                color: 'white', fontWeight: 700, fontSize: 15,
-                                cursor: loading ? 'not-allowed' : 'pointer',
-                                boxShadow: loading ? 'none' : '0 8px 24px rgba(255,100,80,0.4)',
-                                transition: 'all 0.2s',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                                marginTop: 4
-                            }}
+                            className={`w-full py-[13px] text-white font-[700] text-[15px] rounded-[24px] flex items-center justify-center gap-2 mt-1 shadow-[0_8px_24px_rgba(255,100,80,0.4)] transition-all ${loading ? 'bg-white/20 cursor-not-allowed' : 'bg-gradient-to-r from-[#FF5F6D] to-[#FFC371] hover:scale-[1.02] cursor-pointer'}`}
                         >
                             {loading ? (
                                 <>
-                                    <span style={{
-                                        width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)',
-                                        borderTopColor: 'white', borderRadius: '50%',
-                                        animation: 'spin 0.7s linear infinite', display: 'inline-block'
-                                    }} />
+                                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                     Entrando...
                                 </>
                             ) : 'Submit'}
@@ -305,18 +215,17 @@ export default function Login({ onLogin }) {
                 </div>
             </div>
 
-            <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-                input::placeholder { color: rgba(255,255,255,0.35); }
-                @keyframes spin { to { transform: rotate(360deg); } }
-                @keyframes shake {
-                    0%,100% { transform: translateX(0); }
-                    20% { transform: translateX(-8px); }
-                    40% { transform: translateX(8px); }
-                    60% { transform: translateX(-5px); }
-                    80% { transform: translateX(5px); }
-                }
-            `}</style>
+                <style>{`
+                    input::placeholder { color: rgba(255,255,255,0.35); }
+                    @keyframes shake {
+                        0%,100% { transform: translateX(0); }
+                        20% { transform: translateX(-8px); }
+                        40% { transform: translateX(8px); }
+                        60% { transform: translateX(-5px); }
+                        80% { transform: translateX(5px); }
+                    }
+                    .animate-shake { animation: shake 0.5s ease; }
+                `}</style>
         </div>
     );
 }

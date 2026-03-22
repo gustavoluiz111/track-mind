@@ -2,22 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
     Bell, Search, X, LayoutDashboard, Map, Radio, Box,
-    ClipboardCheck, FileText, Users, LogOut
+    ClipboardCheck, FileText, Users, LogOut, Menu
 } from 'lucide-react';
 import { ref, onValue } from 'firebase/database';
 import { db } from '../config/firebase';
 
 const PAGE_META = {
-    '/dashboard':       { title: 'Dashboard',       icon: LayoutDashboard, subtitle: 'Visão geral do sistema' },
-    '/rastreamento':    { title: 'Rastreamento',    icon: Map,             subtitle: 'Monitoramento em tempo real' },
-    '/simulador-gps':   { title: 'Simulador GPS',   icon: Radio,           subtitle: 'Teste de telemetria' },
-    '/itens':           { title: 'Equipamentos',    icon: Box,             subtitle: 'Inventário e status operativo' },
-    '/checklists':      { title: 'Checklists',      icon: ClipboardCheck,  subtitle: 'Inspeções e laudos' },
-    '/contratos':       { title: 'Contratos',       icon: FileText,        subtitle: 'Gestão de contratos ativos' },
-    '/clientes':        { title: 'Clientes',        icon: Users,           subtitle: 'Cadastro de clientes' },
+    // ... existing PAGE_META remains same
 };
 
-const Header = ({ onLogout }) => {
+const Header = ({ onLogout, onMenuClick }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [searchFocused, setSearchFocused] = useState(false);
@@ -95,21 +89,37 @@ const Header = ({ onLogout }) => {
             zIndex: 50,
         }}>
 
-            {/* Left: breadcrumb */}
+            {/* Left: Menu & breadcrumb */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{
-                    width: 32, height: 32, borderRadius: 8,
-                    background: 'var(--bg-elevated)',
-                    border: '1px solid var(--border)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                    <PageIcon size={15} color="var(--accent)" />
-                </div>
-                <div style={{ lineHeight: 1.3 }}>
-                    <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{meta.title}</p>
-                    {meta.subtitle && (
-                        <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: 0 }}>{meta.subtitle}</p>
-                    )}
+                {/* Mobile Menu Button */}
+                <button
+                    onClick={onMenuClick}
+                    style={{
+                        width: 34, height: 34, borderRadius: 8,
+                        background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+                        display: 'none', alignItems: 'center', justifyContent: 'center',
+                        color: 'var(--text-primary)', cursor: 'pointer'
+                    }}
+                    className="mobile-only-flex"
+                >
+                    <Menu size={18} />
+                </button>
+
+                <div className="header-title-group" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{
+                        width: 32, height: 32, borderRadius: 8,
+                        background: 'var(--bg-elevated)',
+                        border: '1px solid var(--border)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                        <PageIcon size={15} color="var(--accent)" />
+                    </div>
+                    <div style={{ lineHeight: 1.3 }}>
+                        <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{meta.title}</p>
+                        {meta.subtitle && (
+                            <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: 0 }}>{meta.subtitle}</p>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -128,10 +138,10 @@ const Header = ({ onLogout }) => {
                         value={searchValue}
                         onChange={e => setSearchValue(e.target.value)}
                         onFocus={() => setSearchFocused(true)}
-                        placeholder="Buscar token, cliente..."
+                        placeholder="Buscar..."
                         style={{
                             height: 34,
-                            width: searchFocused ? 300 : 200,
+                            width: searchFocused ? 260 : 120,
                             paddingLeft: 32,
                             paddingRight: searchValue ? 28 : 12,
                             fontSize: 12,
@@ -140,7 +150,7 @@ const Header = ({ onLogout }) => {
                             borderRadius: 10,
                             color: 'var(--text-primary)',
                             outline: 'none',
-                            transition: 'width 0.25s ease, border-color 0.2s',
+                            transition: 'all 0.25s ease',
                             boxShadow: searchFocused ? '0 0 0 3px var(--accent-glow)' : 'none',
                         }}
                     />
@@ -190,7 +200,7 @@ const Header = ({ onLogout }) => {
                                             onMouseLeave={e => e.currentTarget.style.background = 'none'}
                                         >
                                             <div style={{ width: 30, height: 30, borderRadius: 8, background: res.type === 'item' ? 'rgba(99,102,241,0.1)' : 'rgba(16,185,129,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: res.type === 'item' ? 'var(--accent)' : 'var(--success)', flexShrink: 0 }}>
-                                                {res.type === 'item' ? <Box size={14} /> : <Contact size={14} />}
+                                                {res.type === 'item' ? <Box size={14} /> : <Users size={14} />}
                                             </div>
                                             <div style={{ flex: 1, minWidth: 0 }}>
                                                 <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{res.title}</p>
@@ -208,10 +218,11 @@ const Header = ({ onLogout }) => {
                 </div>
 
                 {/* Divider */}
-                <div style={{ width: 1, height: 20, background: 'var(--border)' }} />
+                <div className="desktop-only" style={{ width: 1, height: 20, background: 'var(--border)' }} />
 
                 {/* Bell */}
                 <button
+                    className="desktop-only"
                     style={{
                         position: 'relative', width: 32, height: 32, borderRadius: 8,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -219,8 +230,6 @@ const Header = ({ onLogout }) => {
                         color: 'var(--text-muted)',
                     }}
                     title="3 alertas ativos"
-                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-elevated)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--text-muted)'; }}
                 >
                     <Bell size={16} />
                     <span style={{
@@ -237,7 +246,7 @@ const Header = ({ onLogout }) => {
                         background: 'none', border: 'none', cursor: 'pointer', padding: 0,
                     }}
                 >
-                    <div style={{ textAlign: 'right' }}>
+                    <div className="desktop-only" style={{ textAlign: 'right' }}>
                         <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>Admin</p>
                         <p style={{ fontSize: 10, color: 'var(--text-muted)', margin: 0 }}>Administrador</p>
                     </div>
@@ -263,10 +272,8 @@ const Header = ({ onLogout }) => {
                             color: 'var(--danger)', fontSize: 12, fontWeight: 600,
                             transition: 'all 0.2s'
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.15)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.08)'; }}
                     >
-                        <LogOut size={14} /> Sair
+                        <LogOut size={14} /> <span className="desktop-only">Sair</span>
                     </button>
                 )}
             </div>

@@ -204,14 +204,14 @@ export default function Dashboard() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
 
             {/* ── KPI Row ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+            <div className="stats-grid">
                 {kpis.map((kpi, i) => (
                     <KpiCard key={kpi.key} kpi={kpi} delay={i * 60} />
                 ))}
             </div>
 
             {/* ── Charts Row ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 20 }}>
+            <div className="charts-grid">
 
                 {/* Área: Evolução Mensal */}
                 <div className="card p-6 animate-slide-up" style={{ animationDelay: '250ms', minHeight: 320, display: 'flex', flexDirection: 'column' }}>
@@ -303,7 +303,7 @@ export default function Dashboard() {
             </div>
 
             {/* ── Lower Row ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20 }}>
+            <div className="dashboard-lower-grid">
 
                 {/* Bar: Categorias */}
                 <div className="card p-6 animate-slide-up flex flex-col" style={{ animationDelay: '370ms', minHeight: 280 }}>
