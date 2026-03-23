@@ -4,9 +4,26 @@ import {
     LayoutDashboard, Map, Box, ClipboardCheck,
     FileText, Users, LogOut, Radio, Cpu, X
 } from 'lucide-react';
+import trackMindLogo from '../assets/trackmind-logo.png';
 
 const NAV_GROUPS = [
-    // ... existing NAV_GROUPS remains same
+    {
+        label: 'Monitoramento',
+        items: [
+            { name: 'Dashboard',       path: '/dashboard',     icon: LayoutDashboard },
+            { name: 'Rastreamento',    path: '/rastreamento',  icon: Map, badge: 'AO VIVO' },
+            { name: 'Simulador GPS',   path: '/simulador-gps', icon: Radio },
+        ],
+    },
+    {
+        label: 'Gestão',
+        items: [
+            { name: 'Equipamentos', path: '/itens',       icon: Box },
+            { name: 'Checklists',   path: '/checklists',  icon: ClipboardCheck },
+            { name: 'Contratos',    path: '/contratos',   icon: FileText },
+            { name: 'Clientes',     path: '/clientes',    icon: Users },
+        ],
+    },
 ];
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -22,34 +39,22 @@ const Sidebar = ({ isOpen, onClose }) => {
                 justifyContent: 'space-between',
                 borderBottom: '1px solid var(--border)',
             }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{
-                        width: 36, height: 36, borderRadius: 10,
-                        background: 'linear-gradient(135deg, var(--accent) 0%, #4F46E5 100%)',
-                        boxShadow: '0 4px 16px var(--accent-glow)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                    }}>
-                        <Cpu size={17} color="white" />
-                    </div>
-                    <div style={{ lineHeight: 1.2 }}>
-                        <span style={{ display: 'block', fontWeight: 700, color: 'var(--text-primary)', fontSize: 13, letterSpacing: '0.02em' }}>
-                            GestãoEQP
-                        </span>
-                        <span style={{ display: 'block', fontSize: 10, color: 'var(--text-muted)', fontFamily: 'monospace' }}>
-                            UPE Industrial
-                        </span>
-                    </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <img
+                        src={trackMindLogo}
+                        alt="TrackMind"
+                        style={{ height: 38, width: 'auto', objectFit: 'contain' }}
+                    />
                 </div>
 
                 {/* Close button for mobile */}
-                <button 
+                <button
                     onClick={onClose}
                     style={{
-                        padding: 8, background: 'none', border: 'none', 
+                        padding: 8, background: 'none', border: 'none',
                         color: 'var(--text-muted)', cursor: 'pointer',
-                        display: 'none', // Controlled by CSS or JS if preferred, but simpler to use media query in index.css if we use a class
                     }}
-                    className="mobile-only-flex" // We'll add this class to index.css if needed, or just style here
+                    className="mobile-only-flex"
                 >
                     <X size={20} />
                 </button>
@@ -141,7 +146,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     </div>
                 </div>
                 <button
-                    onClick={() => { localStorage.removeItem('token'); navigate('/login'); }}
+                    onClick={() => { sessionStorage.removeItem('upe_auth'); navigate('/login'); window.location.reload(); }}
                     style={{
                         display: 'flex', alignItems: 'center', gap: 10,
                         padding: '8px 12px', borderRadius: 10, width: '100%',

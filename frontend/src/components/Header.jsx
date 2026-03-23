@@ -8,7 +8,13 @@ import { ref, onValue } from 'firebase/database';
 import { db } from '../config/firebase';
 
 const PAGE_META = {
-    // ... existing PAGE_META remains same
+    '/dashboard':     { title: 'Dashboard',      subtitle: 'Visão geral do sistema',               icon: LayoutDashboard },
+    '/rastreamento':  { title: 'Rastreamento',   subtitle: 'Monitoramento em tempo real',          icon: Map            },
+    '/simulador-gps': { title: 'Simulador GPS',  subtitle: 'Teste e simulação de rotas',           icon: Radio          },
+    '/itens':         { title: 'Equipamentos',   subtitle: 'Gestão do parque de equipamentos',     icon: Box            },
+    '/checklists':    { title: 'Checklists',     subtitle: 'Inspeções e verificações',             icon: ClipboardCheck },
+    '/contratos':     { title: 'Contratos',      subtitle: 'Gestão de contratos e aluguéis',       icon: FileText       },
+    '/clientes':      { title: 'Clientes',       subtitle: 'Cadastro e gestão de clientes',        icon: Users          },
 };
 
 const Header = ({ onLogout, onMenuClick }) => {
@@ -138,7 +144,7 @@ const Header = ({ onLogout, onMenuClick }) => {
                         value={searchValue}
                         onChange={e => setSearchValue(e.target.value)}
                         onFocus={() => setSearchFocused(true)}
-                        placeholder="Buscar..."
+                        placeholder="Buscar token, cliente..."
                         style={{
                             height: 34,
                             width: searchFocused ? 260 : 120,
